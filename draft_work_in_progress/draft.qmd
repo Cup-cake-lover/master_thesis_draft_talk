@@ -640,4 +640,70 @@ $$
 
 :::
 
-## High resolution shows presence of inhibitory subfields 
+## High resolution STAs shows the presence of inhibitory subfields 
+
+::: {.column width="55%"}
+<div class="r-stack">
+![](images/results/complex_stas/master_complex_str.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/master_complex_str_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
+
+![](images/results/Inh_subfields/master_inh_str_1.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+
+![](images/results/Inh_subfields/master_inh_str_2.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+
+![](images/results/Inh_subfields/master_inh_str_3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
+
+![](images/results/Inh_subfields/master_inh_str_4.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+
+</div>
+:::
+
+::: {.column width="40%"}
+<div class="r-stack">
+![](images/results/Inh_subfields/zoomed_inh_1.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+
+![](images/results/Inh_subfields/zoomed_inh_2.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+
+![](images/results/Inh_subfields/zoomed_inh_3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
+
+![](images/results/Inh_subfields/zoomed_inh_4.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+</div>
+
+
+:::
+
+## Electrical structure reveals correlations to the STA
+
+::: {.column width="50%"}
+
+### Localization of STA - E.g. Unit 54
+
+<div class="r-stack">
+
+<!-- State 1: image only -->
+<div class="fragment fade-out" data-fragment-index="2">
+![](images/results/electrical_foot/sta_ef_1.png){width="100%"}
+</div>
+
+<!-- State 2: image + equation -->
+<div class="fragment fade-in-then-out" data-fragment-index="2">
+![](images/results/electrical_foot/sta_ef_1.png){width="100%"}
+
+$$
+\text{Scaling factor}=\frac{17.5}{19.0}=0.92
+$$
+</div>
+
+<!-- State 3: second image -->
+<div class="fragment fade-in" data-fragment-index="3">
+![](images/results/electrical_foot/sta_ef_2.png){width="80%"}
+</div>
+
+</div>
+:::
+
+::: {.column width="50%"}
+### Electrical footprint
+
+:::
