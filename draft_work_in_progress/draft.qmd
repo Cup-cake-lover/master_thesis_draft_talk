@@ -321,7 +321,7 @@ E = 0.013 mW/mm2
 
 ::: {.columns}
 
-::: {.column width="40%"}
+::: {.column width="30%"}
 
 ### On-axis PSF
 <div class="r-stack">
@@ -331,6 +331,8 @@ E = 0.013 mW/mm2
 ![](images/psf_on_axis_fits.png){.fragment .fade-in data-fragment-index="2" width="100%"}
 
 </div>
+
+On-axis FWHM : $10.8 \mu m$
 
 :::
 
@@ -569,3 +571,73 @@ Frame times are logged directly from the GPU
 ## Results
 
 ## Results - Recording fidelity of the Maxwell System
+::: {.column width="60%"}
+### Spontaneous activity DIV 20
+![](images/results/spontaneous_activity_P004474_DIV20_100s.png){.fragment .fade-in data-fragment-index="1" width="100%" fig-align="left"}
+:::
+
+::: {.column width="40%"}
+### Analysis
+- Only units with > 1000 spikes are selected for analysis
+- The stimulus ensemble is mean centered first
+- All STAs are z-scored as
+
+$$
+\hat{k}(\mathbf{x}, \tau_k) = \frac{k(\mathbf{x}, \tau_k) - \mu_k}{\sigma_k}
+$$
+:::
+
+## Increasing stimulus resolution increase STA features
+::: {.column width="55%"}
+<div class="r-stack">
+![](images/results/res_control/master_res_control.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
+
+![](images/results/res_control/master_res_control_1.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+
+![](images/results/res_control/master_res_control_2.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+
+![](images/results/res_control/master_res_control_3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
+
+</div>
+
+
+:::
+
+::: {.column width="45%"}
+- Experiment duration : 15 min
+- Approx spikes collected  : ~ 2000
+:::
+
+## High resolution low noise STAs reveal complex structures
+::: {.column width="55%"}
+<div class="r-stack">
+![](images/results/complex_stas/master_complex_str.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/master_complex_str_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/master_complex_str_2.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/master_complex_str_3.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/master_complex_str_4.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/master_complex_str_5.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+
+</div>
+:::
+
+::: {.column width="40%"}
+<div class="r-stack">
+![](images/results/complex_stas/zoomed1.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/zoomed2.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/zoomed3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
+
+![](images/results/complex_stas/zoomed4.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+</div>
+
+
+:::
+
+## High resolution shows presence of inhibitory subfields 
