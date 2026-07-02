@@ -1,0 +1,571 @@
+---
+title: "Probing Spatio-temporal Receptive Fields In Surrogate Cortical Circuits"
+title-slide-attributes:
+  data-background-image: "images/0x_2C_10x_objective_center_brightfield.jpg"
+  data-background-size: "cover"
+  data-background-opacity: "0.2"
+date: today
+subtitle: "Master Thesis Defense"
+author:
+  - name: "Hari Prasad Sreekrishnapurath Variyam"
+    affiliation:
+      - "Bonn Cologne Graduate School for Physics and Astronomy (BCGS), University of Cologne"
+      - "Göttingen Campus Institute for Dynamics of Biological Networks (CIDBN), University of Göttingen"
+author-meta: "hpsv"
+bibliography: references.bib
+
+format:
+  revealjs:
+    auto-animate-duration: 0.8
+    auto-animate-unmatched: true
+    transition: fade
+    slide-number: true
+    preview-links: auto
+    css: /home/hari/projects/quarto/styles.css
+    footer: 'Campus Institute for Dynamics of Biological Networks (CIDBN), University of Gottingen'
+    logo: images/cidbnlogo.png
+include-in-header:
+  - text: |
+      <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
+      <script type="module" src="js/lensplot.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+      <script src="js/boxplot.js"></script>
+      <script src="js/barplot.js"></script>
+execute:
+  python: /home/hari/miniforge3/envs/Quarto/bin/python3
+embed-resources: True
+width: 1500
+scrollable: false
+---
+
+## Neural responses to natural stimuli
+
+Natural stimuli defined as the stimulus from the organism's natural environment
+
+::: {.columns}
+
+::: {.column width="30%"}
+
+::: {.fragment .fade-in}
+![](images/gg_input.jpg)
+Natural stimulus
+:::
+
+:::
+::: {.column width="20%"}
+::: {.fragment .fade-in}
+<div style="font-size: 4em; text-align:center;">
+⇄
+</div>
+<div style="text-align:center; margin-top:0.5em;">
+Encoding
+</div>
+:::
+:::
+::: {.column width="50%"}
+
+::: {.fragment .fade-in}
+![](images/output.png)
+Response
+:::
+:::
+:::
+
+<div class="" style="position:absolute; bottom:20px; right:20px; font-size:0.6em; color:gray;">
+Sharpee et al. (2006), Nawrot MP et al., 2007
+</div>
+
+## Linear description ?
+
+## Receptive field
+
+::: {.columns}
+
+::: {.column width="40%"}
+
+![](images/rf.png){width="100%"}
+
+:::
+
+::: {.column width="20%"}
+
+$$
+\begin{aligned}
+\lambda(t)
+&= \lambda_0 \\
+&\quad +
+\underbrace{
+\iiint dxdyd\tau\,
+\mathcal{K}(x,y,\tau)\,
+\mathcal{S}(x,y,t-\tau)
+}_{\mathcal{L}}
+\end{aligned}
+$$
+
+:::
+
+:::
+
+## RF estimation <span class="underline-fragment fragment" data-fragment-index="1"> using reverse correlation studies</span>
+
+## Questions
+
+- 1. Can computational models help us in modelling and inferring receptive fields?
+- 2. What do these models tell us about the complex structure of teh receptive fields?
+
+## Project Objectives
+
+::: {.columns}
+
+::: {.column width="33%"}
+
+<div class="fragment fade-in card" data-fragment-index="1">
+<div class="icon">🔗</div>
+### Pipeline
+Large-scale reverse correlation analysis on recorded neural data — Receptive Field Kit
+</div>
+
+:::
+
+::: {.column width="33%"}
+
+<div class="fragment fade-in card" data-fragment-index="2">
+<div class="icon">⚡</div>
+### Stimulation
+Design, construct and validate a device for neuro-stimulation experiments — HD MANTIS
+</div>
+
+:::
+
+::: {.column width="33%"}
+
+<div class="fragment fade-in card" data-fragment-index="3">
+<div class="icon">🧫</div>
+### Cultures
+Sterile culturing and maintenance of cell cultures for large-scale recordings
+</div>
+
+:::
+
+:::
+
+## Inferring RF from forward models 
+LNP spike trains with a ground truth filter
+
+## Inferring RF from forward models - Network models
+Using GLMs to recover RF with additional information 
+
+
+
+## Which Surrogate?
+Light sensitized dissociated cortical cultures plated on a multi electrode array
+
+## Chronic light perturbation experiments
+
+::: {.columns}
+
+::: {.column width="60%"}
+
+::: {.fragment .fade-in}
+![](images/lightdisco.gif){width="100%"}
+Light Disco Ver. 1.0
+:::
+
+:::
+
+::: {.column width="40%"}
+
+::: {.fragment .fade-in}
+![](images/oldstas.png){width="100%"}
+Receptive Field estimates
+:::
+:::
+
+:::
+
+<div class="" style="position:absolute; bottom:20px; right:20px; font-size:0.6em; color:gray;">
+Dr. Andreas Neef
+</div>
+
+## Goal : Develop a high resolution optical stimulation system
+
+::: {.columns}
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="1">
+<div class="icon">🔬</div>
+### Resolution
+Sub-cellular stimulus delivery
+</div>
+
+:::
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="2">
+<div class="icon">🧠</div>
+### Recording
+Large-scale electrophysiology
+</div>
+
+:::
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="3">
+<div class="icon">⏱️</div>
+### Sync
+Sub-millisecond synchronization
+</div>
+
+:::
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="4">
+<div class="icon">🧫</div>
+### Environment
+Incubator compatible
+</div>
+
+:::
+
+:::
+
+## High Density Multielectrode Array based Neuronal Targeting via Illuminated Stimuli
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+<div class="r-stack">
+
+![](images/master.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%"}
+
+![](images/master_optics.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
+
+![](images/master_control.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%"}
+
+![](images/master_record.png){.fragment .fade-in data-fragment-index="4" width="100%"}
+
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+<div class="r-stack">
+
+::: {.fragment .fade-in-then-out data-fragment-index="2"}
+### High Definition OLED Display
+![](images/oled.png){width="80%"}
+:::
+
+::: {.fragment .fade-in-then-out data-fragment-index="3"}
+### Raspberry Pi
+![](images/rpi.png){width="100%"}
+:::
+
+::: {.fragment .fade-in data-fragment-index="4"}
+### Maxwell suite
+![](images/maxwell_suite_image.png){width="100%"}
+:::
+
+</div>
+
+:::
+
+:::
+
+## Optics - Light Power Intensity Measurements 
+
+::: {.columns}
+
+::: {.column width="60%"}
+
+### Response verification {.fragment .fade.in data-fragment-index="1"}
+<div class="r-stack">
+
+![](images/stim_irr_verf.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
+
+![](images/stim_irr_verf_rec.png){.fragment .fade-in data-fragment-index="3" width="100%"}
+
+</div>
+
+E = 0.013 mW/mm2
+:::
+
+::: {.column width="40%"}
+
+### Different Lenses {.fragment .fade.in data-fragment-index="4"}
+::: {.fragment .fade-in data-fragment-index="5"}
+<canvas id="lens-chart" width="900" height="800"></canvas>
+
+:::
+
+::: {.fragment #show-points data-fragment-index="6"}
+:::
+
+::: {.fragment #show-fit data-fragment-index="7"}
+:::
+
+:::
+
+:::
+
+
+
+
+## Optics - Resolution Measurements
+
+::: {.columns}
+
+::: {.column width="40%"}
+
+### On-axis PSF
+<div class="r-stack">
+
+![](images/psf_on_axis.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%"}
+
+![](images/psf_on_axis_fits.png){.fragment .fade-in data-fragment-index="2" width="100%"}
+
+</div>
+
+:::
+
+::: {.column width="60%"}
+
+### Spatial Inhomogeneity of the PSFs
+
+![](images/psf_spatial_dist.png){.fragment width="80%" fig-align="center"}
+
+:::
+
+:::
+
+## Software stack - Overview
+
+<div class="r-stack">
+
+![](images/softstack/software_stack_master.png){.fragment .fade-in-then-out data-fragment-index="1" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_2.png){.fragment .fade-in-then-out data-fragment-index="3" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_3.png){.fragment .fade-in-then-out data-fragment-index="4" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_4.png){.fragment .fade-in-then-out data-fragment-index="5" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_5.png){.fragment .fade-in-then-out data-fragment-index="6" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_6.png){.fragment .fade-in-then-out data-fragment-index="7" width="90%" fig-align="center"}
+
+
+
+</div>
+
+## Software stack - Stimulus modes
+
+
+::: {.columns}
+
+::: {.column width="33%"}
+
+<div class="fragment fade-in card" data-fragment-index="1">
+<div class="icon"><img src="images/stimmodes/flashstim_logo.png" alt="Localized flashing"></div>
+### Localized Flashing
+Specific area of screen flashed with a on-off duty cycle
+</div>
+
+:::
+
+::: {.column width="33%"}
+
+<div class="fragment fade-in card" data-fragment-index="2">
+<div class="icon"><img src="images/stimmodes/pb_logo.png" alt="PB"></div>
+### Poisson-Bernoulli
+Random uncorrelated spatiotemporal block checkerboards
+</div>
+
+:::
+
+::: {.column width="33%"}
+
+<div class="fragment fade-in card" data-fragment-index="3">
+<div class="icon"><img src="images/stimmodes/og_logo.png" alt="og"></div>
+
+
+### Orientational gratings
+Sinusoidal gratings with variable grating and temporal parameters
+</div>
+
+:::
+
+:::
+
+## Software stack - Stimulus modes - Poisson-Bernoulli Stimulus
+
+::: {.column width="30%"}
+<div class="fragment fade-in card" data-fragment-index="1">
+<div class="icon"><img src="images/stimmodes/pb_logo.png" alt="PB"></div>
+### Poisson-Bernoulli
+Random uncorrelated spatiotemporal block checkerboards. With p_on values for sparsity and different resolutions.
+</div>
+:::
+
+
+::: {.column width="60%"}
+<div style="padding-left: 40px;">
+
+::: {.fragment .fade-in data-fragment-index="2"}
+
+::: {.columns}
+
+::: {.column width="33%"}
+![](images/stimmodes/pb_stimulus_grid20.gif){width=95%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/pb_stimulus_grid40.gif){width=100%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/pb_stimulus_grid100.gif){width=100%}
+:::
+
+:::
+:::
+
+<div style="margin-top: -50px;">
+::: {.fragment .fade-in data-fragment-index="3"}
+::: {.columns}
+
+::: {.column width="33%"}
+![](images/stimmodes/pb_stimulus_p0.05.gif){width=100%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/pb_stimulus_p0.1.gif){width=100%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/pb_stimulus_p0.2.gif){width=100%}
+:::
+
+:::
+:::
+</div>
+</div>
+:::
+
+## Software stack - Stimulus modes - Orientational gratings
+
+::: {.column width="30%"}
+<div class="fragment fade-in card" data-fragment-index="1">
+<div class="icon"><img src="images/stimmodes/og_logo.png" alt="PB"></div>
+### Orientational Gratings
+Sinusoidal gratings with controllable direction, wavelength and frequency.
+</div>
+:::
+
+::: {.column width="67%"}
+<div style="padding-left: 40px;">
+
+::: {.fragment .fade-in data-fragment-index="2"}
+
+::: {.columns}
+
+::: {.column width="33%"}
+![](images/stimmodes/grating_dir0deg.gif){width=110%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/grating_dir45deg.gif){width=100%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/grating_dir90deg.gif){width=100%}
+:::
+
+:::
+:::
+
+<div style="margin-top: -50px;">
+::: {.fragment .fade-in data-fragment-index="3"}
+::: {.columns}
+
+::: {.column width="33%"}
+![](images/stimmodes/grating_wl100px.gif){width=100%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/grating_wl200px.gif){width=100%}
+:::
+
+::: {.column width="33%"}
+![](images/stimmodes/grating_wl400px.gif){width=100%}
+:::
+
+:::
+:::
+</div>
+</div>
+
+$$
+\boxed{f(x, y, t) = \sin\!\left(\frac{2\pi}{\lambda}
+\left(x\cos\theta + y\sin\theta\right) + \omega t\right)}
+$$
+:::
+
+
+
+## Frame times as a sync signal
+Frame times are logged directly from the GPU
+
+::: {.column width="50%"}
+### Setup
+![](images/sync/sync_setup.png){.fragment .fade-in data-fragment-index="1" width="100%" fig-align="center"}
+
+:::
+
+::: {.column width="50%"}
+### Oscilloscope traces
+<div class="r-stack">
+
+![](images/sync/sync1.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
+
+![](images/sync/sync2.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+</div>
+:::
+
+## Fluctuations of frame presentation rates
+
+::: {.column width="50%"}
+### Distributions of FPR
+<div id="boxplot" style="width:800px;height:600px;"></div>
+
+::: {.fragment #show-boxes }
+:::
+:::
+
+::: {.column width="50%"}
+### Quality of Sync.
+<div id="barplot" style="width:900px;height:600px;"></div>
+
+::: {.fragment #bar-reveal-1}
+:::
+::: {.fragment #bar-reveal-2}
+:::
+::: {.fragment #bar-reveal-3}
+:::
+:::
+
+
+
+## {.center}
+
+## Results
+
+## Results - Recording fidelity of the Maxwell System

@@ -1,0 +1,404 @@
+## Tabsets {.smaller .scrollable transition="slide"}
+
+::: panel-tabset
+### Distributions
+
+```{python}
+import seaborn as sns
+import matplotlib.pyplot as plt
+import pickle
+
+with open("data/fprs_10x10", "rb") as fp:
+  b = pickle.load(fp)
+
+# Load the built-in mtcars dataset from seaborn
+
+# Create the scatter plot with regression line
+sns.boxplot(b)
+```
+
+### Raw Data
+
+```{python}
+sns.lineplot(b[0])
+sns.lineplot(b[1])
+sns.lineplot(b[2])
+plt.show()
+
+```
+:::
+
+
+## {auto-animate=true}
+
+<h2>
+  <span data-id="H" class="acronym">H</span>igh 
+  <span data-id="D" class="acronym">D</span>ensity 
+  <span data-id="M" class="acronym">M</span>ultielectrode 
+  <span data-id="A" class="acronym">A</span>rray based 
+  <span data-id="N" class="acronym">N</span>euronal 
+  <span data-id="T" class="acronym">T</span>argeting via 
+  <span data-id="I" class="acronym">I</span>lluminated 
+  <span data-id="S" class="acronym">S</span>timuli
+</h2>
+
+---
+
+## {auto-animate=true}
+
+<h2>
+  <span data-id="H" class="acronym">H</span><span data-id="D" class="acronym">D</span> <span data-id="M" class="acronym">M</span><span data-id="A" class="acronym">A</span><span data-id="N" class="acronym">N</span><span data-id="T" class="acronym">T</span><span data-id="I" class="acronym">I</span><span data-id="S" class="acronym">S</span>
+</h2>
+
+
+
+
+######################## 
+
+
+// lensplot.js
+
+import * as ChartJS from "https://cdn.jsdelivr.net/npm/chart.js/auto/+esm";
+
+const { Chart } = ChartJS;console.log("lensplot.js loaded");
+// --------------------------------------------------------------------
+// Replace these with your data
+// --------------------------------------------------------------------
+
+// ---------------------------
+// Your data
+// ---------------------------
+
+const points = [
+    { x: 0.7477, y: 0.0127 },
+    { x: 1.435, y: 0.0039 },
+    { x: 1.1765, y: 0.0063 },
+    { x: 1.1737, y: 0.0063 },
+    { x: 1.7647, y: 0.0028 },
+    { x: 1.8868, y: 0.0026 },
+    { x: 2.8302, y: 0.0012 }
+];
+
+const fit = [
+    { x: 0.7477, y: 0.0153 },
+    { x: 0.7581, y: 0.0149 },
+    { x: 0.7686, y: 0.0145 },
+    { x: 0.7791, y: 0.0141 },
+    { x: 0.7895, y: 0.0137 },
+    { x: 0.8, y: 0.0134 },
+    { x: 0.8105, y: 0.013 },
+    { x: 0.8209, y: 0.0127 },
+    { x: 0.8314, y: 0.0124 },
+    { x: 0.8418, y: 0.0121 },
+    { x: 0.8523, y: 0.0118 },
+    { x: 0.8628, y: 0.0115 },
+    { x: 0.8732, y: 0.0112 },
+    { x: 0.8837, y: 0.011 },
+    { x: 0.8942, y: 0.0107 },
+    { x: 0.9046, y: 0.0105 },
+    { x: 0.9151, y: 0.0102 },
+    { x: 0.9256, y: 0.01 },
+    { x: 0.936, y: 0.0098 },
+    { x: 0.9465, y: 0.0096 },
+    { x: 0.957, y: 0.0094 },
+    { x: 0.9674, y: 0.0092 },
+    { x: 0.9779, y: 0.009 },
+    { x: 0.9884, y: 0.0088 },
+    { x: 0.9988, y: 0.0086 },
+    { x: 1.0093, y: 0.0084 },
+    { x: 1.0198, y: 0.0082 },
+    { x: 1.0302, y: 0.0081 },
+    { x: 1.0407, y: 0.0079 },
+    { x: 1.0511, y: 0.0078 },
+    { x: 1.0616, y: 0.0076 },
+    { x: 1.0721, y: 0.0075 },
+    { x: 1.0825, y: 0.0073 },
+    { x: 1.093, y: 0.0072 },
+    { x: 1.1035, y: 0.007 },
+    { x: 1.1139, y: 0.0069 },
+    { x: 1.1244, y: 0.0068 },
+    { x: 1.1349, y: 0.0067 },
+    { x: 1.1453, y: 0.0065 },
+    { x: 1.1558, y: 0.0064 },
+    { x: 1.1663, y: 0.0063 },
+    { x: 1.1767, y: 0.0062 },
+    { x: 1.1872, y: 0.0061 },
+    { x: 1.1977, y: 0.006 },
+    { x: 1.2081, y: 0.0059 },
+    { x: 1.2186, y: 0.0058 },
+    { x: 1.2291, y: 0.0057 },
+    { x: 1.2395, y: 0.0056 },
+    { x: 1.25, y: 0.0055 },
+    { x: 1.2604, y: 0.0054 },
+    { x: 1.2709, y: 0.0053 },
+    { x: 1.2814, y: 0.0052 },
+    { x: 1.2918, y: 0.0052 },
+    { x: 1.3023, y: 0.0051 },
+    { x: 1.3128, y: 0.005 },
+    { x: 1.3232, y: 0.0049 },
+    { x: 1.3337, y: 0.0048 },
+    { x: 1.3442, y: 0.0048 },
+    { x: 1.3546, y: 0.0047 },
+    { x: 1.3651, y: 0.0046 },
+    { x: 1.3756, y: 0.0046 },
+    { x: 1.386, y: 0.0045 },
+    { x: 1.3965, y: 0.0044 },
+    { x: 1.407, y: 0.0044 },
+    { x: 1.4174, y: 0.0043 },
+    { x: 1.4279, y: 0.0042 },
+    { x: 1.4384, y: 0.0042 },
+    { x: 1.4488, y: 0.0041 },
+    { x: 1.4593, y: 0.0041 },
+    { x: 1.4697, y: 0.004 },
+    { x: 1.4802, y: 0.0039 },
+    { x: 1.4907, y: 0.0039 },
+    { x: 1.5011, y: 0.0038 },
+    { x: 1.5116, y: 0.0038 },
+    { x: 1.5221, y: 0.0037 },
+    { x: 1.5325, y: 0.0037 },
+    { x: 1.543, y: 0.0036 },
+    { x: 1.5535, y: 0.0036 },
+    { x: 1.5639, y: 0.0035 },
+    { x: 1.5744, y: 0.0035 },
+    { x: 1.5849, y: 0.0034 },
+    { x: 1.5953, y: 0.0034 },
+    { x: 1.6058, y: 0.0034 },
+    { x: 1.6163, y: 0.0033 },
+    { x: 1.6267, y: 0.0033 },
+    { x: 1.6372, y: 0.0032 },
+    { x: 1.6476, y: 0.0032 },
+    { x: 1.6581, y: 0.0032 },
+    { x: 1.6686, y: 0.0031 },
+    { x: 1.679, y: 0.0031 },
+    { x: 1.6895, y: 0.003 },
+    { x: 1.7, y: 0.003 },
+    { x: 1.7104, y: 0.003 },
+    { x: 1.7209, y: 0.0029 },
+    { x: 1.7314, y: 0.0029 },
+    { x: 1.7418, y: 0.0029 },
+    { x: 1.7523, y: 0.0028 },
+    { x: 1.7628, y: 0.0028 },
+    { x: 1.7732, y: 0.0028 },
+    { x: 1.7837, y: 0.0027 },
+    { x: 1.7942, y: 0.0027 },
+    { x: 1.8046, y: 0.0027 },
+    { x: 1.8151, y: 0.0026 },
+    { x: 1.8256, y: 0.0026 },
+    { x: 1.836, y: 0.0026 },
+    { x: 1.8465, y: 0.0026 },
+    { x: 1.8569, y: 0.0025 },
+    { x: 1.8674, y: 0.0025 },
+    { x: 1.8779, y: 0.0025 },
+    { x: 1.8883, y: 0.0024 },
+    { x: 1.8988, y: 0.0024 },
+    { x: 1.9093, y: 0.0024 },
+    { x: 1.9197, y: 0.0024 },
+    { x: 1.9302, y: 0.0023 },
+    { x: 1.9407, y: 0.0023 },
+    { x: 1.9511, y: 0.0023 },
+    { x: 1.9616, y: 0.0023 },
+    { x: 1.9721, y: 0.0023 },
+    { x: 1.9825, y: 0.0022 },
+    { x: 1.993, y: 0.0022 },
+    { x: 2.0035, y: 0.0022 },
+    { x: 2.0139, y: 0.0022 },
+    { x: 2.0244, y: 0.0021 },
+    { x: 2.0349, y: 0.0021 },
+    { x: 2.0453, y: 0.0021 },
+    { x: 2.0558, y: 0.0021 },
+    { x: 2.0662, y: 0.0021 },
+    { x: 2.0767, y: 0.002 },
+    { x: 2.0872, y: 0.002 },
+    { x: 2.0976, y: 0.002 },
+    { x: 2.1081, y: 0.002 },
+    { x: 2.1186, y: 0.002 },
+    { x: 2.129, y: 0.0019 },
+    { x: 2.1395, y: 0.0019 },
+    { x: 2.15, y: 0.0019 },
+    { x: 2.1604, y: 0.0019 },
+    { x: 2.1709, y: 0.0019 },
+    { x: 2.1814, y: 0.0019 },
+    { x: 2.1918, y: 0.0018 },
+    { x: 2.2023, y: 0.0018 },
+    { x: 2.2128, y: 0.0018 },
+    { x: 2.2232, y: 0.0018 },
+    { x: 2.2337, y: 0.0018 },
+    { x: 2.2442, y: 0.0018 },
+    { x: 2.2546, y: 0.0017 },
+    { x: 2.2651, y: 0.0017 },
+    { x: 2.2755, y: 0.0017 },
+    { x: 2.286, y: 0.0017 },
+    { x: 2.2965, y: 0.0017 },
+    { x: 2.3069, y: 0.0017 },
+    { x: 2.3174, y: 0.0017 },
+    { x: 2.3279, y: 0.0016 },
+    { x: 2.3383, y: 0.0016 },
+    { x: 2.3488, y: 0.0016 },
+    { x: 2.3593, y: 0.0016 },
+    { x: 2.3697, y: 0.0016 },
+    { x: 2.3802, y: 0.0016 },
+    { x: 2.3907, y: 0.0016 },
+    { x: 2.4011, y: 0.0015 },
+    { x: 2.4116, y: 0.0015 },
+    { x: 2.4221, y: 0.0015 },
+    { x: 2.4325, y: 0.0015 },
+    { x: 2.443, y: 0.0015 },
+    { x: 2.4535, y: 0.0015 },
+    { x: 2.4639, y: 0.0015 },
+    { x: 2.4744, y: 0.0015 },
+    { x: 2.4848, y: 0.0015 },
+    { x: 2.4953, y: 0.0014 },
+    { x: 2.5058, y: 0.0014 },
+    { x: 2.5162, y: 0.0014 },
+    { x: 2.5267, y: 0.0014 },
+    { x: 2.5372, y: 0.0014 },
+    { x: 2.5476, y: 0.0014 },
+    { x: 2.5581, y: 0.0014 },
+    { x: 2.5686, y: 0.0014 },
+    { x: 2.579, y: 0.0014 },
+    { x: 2.5895, y: 0.0013 },
+    { x: 2.6, y: 0.0013 },
+    { x: 2.6104, y: 0.0013 },
+    { x: 2.6209, y: 0.0013 },
+    { x: 2.6314, y: 0.0013 },
+    { x: 2.6418, y: 0.0013 },
+    { x: 2.6523, y: 0.0013 },
+    { x: 2.6627, y: 0.0013 },
+    { x: 2.6732, y: 0.0013 },
+    { x: 2.6837, y: 0.0013 },
+    { x: 2.6941, y: 0.0012 },
+    { x: 2.7046, y: 0.0012 },
+    { x: 2.7151, y: 0.0012 },
+    { x: 2.7255, y: 0.0012 },
+    { x: 2.736, y: 0.0012 },
+    { x: 2.7465, y: 0.0012 },
+    { x: 2.7569, y: 0.0012 },
+    { x: 2.7674, y: 0.0012 },
+    { x: 2.7779, y: 0.0012 },
+    { x: 2.7883, y: 0.0012 },
+    { x: 2.7988, y: 0.0012 },
+    { x: 2.8093, y: 0.0012 },
+    { x: 2.8197, y: 0.0012 },
+    { x: 2.8302, y: 0.0011 }
+];
+
+
+// ---------------------------
+// Chart instance
+// ---------------------------
+
+let chart = null;
+
+function initChart() {
+
+    const canvas = document.getElementById("lens-chart");
+
+    if (!canvas) return;
+
+    chart = new Chart(canvas, {
+
+        type: "scatter",
+
+        data: {
+            datasets: [
+                {
+                    label: "Measurements",
+                    data: [],
+                    pointRadius: 6,
+                    backgroundColor: "#D4C2FC",
+                    borderColor: "black",
+                    borderWidth: 1
+                },
+                {
+                    type: "line",
+                    label: "Fit",
+                    data: [],
+                    pointRadius: 0,
+                    borderColor: "black",
+                    borderDash: [6, 4],
+                    borderWidth: 2
+                }
+            ]
+        },
+
+        options: {
+            responsive: true,
+            animation: {
+                duration: 800
+            },
+            scales: {
+                x: {
+                    type: "linear",
+                    title: {
+                        display: true,
+                        text: "f #"
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "E"
+                    }
+                }
+            }
+        }
+    });
+
+    setupRevealControls();
+}
+
+// ---------------------------
+// Reveal.js control logic
+// ---------------------------
+
+function setupRevealControls() {
+
+    if (typeof Reveal === "undefined") {
+        console.warn("Reveal.js not found");
+        return;
+    }
+
+    Reveal.on("fragmentshown", (event) => {
+
+        if (!chart) return;
+
+        const id = event.fragment.id;
+
+        if (id === "show-points") {
+
+            chart.data.datasets[0].data = points;
+            chart.update();
+
+        }
+
+        if (id === "show-fit") {
+
+            chart.data.datasets[1].data = fit;
+            chart.update();
+
+        }
+    });
+
+    Reveal.on("fragmenthidden", (event) => {
+
+        if (!chart) return;
+
+        const id = event.fragment.id;
+
+        if (id === "show-points") {
+            chart.data.datasets[0].data = [];
+            chart.update();
+        }
+
+        if (id === "show-fit") {
+            chart.data.datasets[1].data = [];
+            chart.update();
+        }
+    });
+}
+
+// ---------------------------
+// Init after DOM ready
+// ---------------------------
+
+window.addEventListener("load", initChart);
