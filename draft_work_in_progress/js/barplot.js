@@ -32,6 +32,11 @@ function initChart(d) {
     chart = echarts.init(dom);
 
     chart.setOption({
+        color: [
+        "#5470C6", // <1 ms
+        "#91CC75", // <2 ms
+        "#EE6666"  // <5 ms
+        ],
 
         animationDuration: 600,
 

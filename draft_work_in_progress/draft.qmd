@@ -16,21 +16,23 @@ bibliography: references.bib
 
 format:
   revealjs:
+    menu : true
     auto-animate-duration: 0.8
     auto-animate-unmatched: true
     transition: fade
     slide-number: true
     preview-links: auto
     css: /home/hari/projects/quarto/styles.css
-    footer: 'Campus Institute for Dynamics of Biological Networks (CIDBN), University of Gottingen'
+    footer: 'Campus Institute for Dynamics of Biological Networks (CIDBN), University of Göttingen'
     logo: images/cidbnlogo.png
 include-in-header:
   - text: |
-      <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js" defer></script>
+      <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
       <script type="module" src="js/lensplot.js"></script>
       <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
       <script src="js/boxplot.js"></script>
       <script src="js/barplot.js"></script>
+      <script type="module" src="js/tuningcurve.js"></script>
 execute:
   python: /home/hari/miniforge3/envs/Quarto/bin/python3
 embed-resources: True
@@ -38,7 +40,55 @@ width: 1500
 scrollable: false
 ---
 
-## Neural responses to natural stimuli
+
+## Outline
+
+- **Introduction**
+- Parallel tools
+- Development and validation of a new system
+- Experiments and results
+- Conclusions
+
+
+
+## The neuron and the action potential
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+::: {.fragment .fade-in data-fragment-index="1"}
+![](images/rat_cortical_neuron_scales.png){width="80%" fig-align="left"}
+<br> A cortical neuron with relevant scales
+:::
+:::
+::: {.column .fragment .fade-in data-fragment-index="2" width="50%"}
+#### Action potentials represented as [spike times]{.fragment .highlight-red data-fragment-index="3"}
+<div class="r-stack">
+![](images/action_pot_without%20spikes.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
+
+![](images/action_pot_with%20spikes.png){.fragment .fade-in data-fragment-index="3" width="100%"}
+Action potentials obtained from a neuron*
+</div>
+:::
+
+:::
+
+<div class="" style="position:absolute; bottom:-20px; right:20px; font-size:0.6em; color:gray;">
+Nawrot MP et al. (2007)
+</div>
+
+
+
+::: notes
+The brain is one of the most complex biological systems, comprising billions of interconnected neurons and supporting cells. These neural networks underlie everything we do—from perception and memory to movement and decision-making.
+
+Neurons are highly specialized cells with complex morphology and unique physiological properties. Here I show the morphology of a neuron showing specific structures such dendrites, soma and axons and their spatial scales.
+
+They communicate through brief electrical signals known as action potentials, which last only a few milliseconds. These action potentials arise from the flow of ions across the neuronal membrane and are typically represented as discrete events in time, called spikes (as the shape of them are nearly invariant)
+:::
+
+## Modelling responses to natural stimuli
 
 Natural stimuli defined as the stimulus from the organism's natural environment
 
@@ -58,60 +108,234 @@ Natural stimulus
 ⇄
 </div>
 <div style="text-align:center; margin-top:0.5em;">
-Encoding
+Model ?
 </div>
 :::
 :::
 ::: {.column width="50%"}
-
 ::: {.fragment .fade-in}
-![](images/output.png)
-Response
+![](images/responses_spikes.png){width="80%"}
+Responses as spike times
 :::
 :::
 :::
 
 <div class="" style="position:absolute; bottom:20px; right:20px; font-size:0.6em; color:gray;">
-Sharpee et al. (2006), Nawrot MP et al., 2007
+Sharpee et al. (2013)
 </div>
 
-## Linear description ?
+::: notes
+One of the fundamental goals of neuroscience is to understand how neurons transform external stimuli into meaningful patterns of spiking activity. To achieve this, we develop models that can predict neuronal responses to previously unseen stimuli.
 
-## Receptive field
+For example, In sensory neuroscience, the ultimate objective is to predict how neurons respond to natural stimuli from an organism's environment.
+:::
+
+
+## Spatio-temporal Receptive Field
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+::: {.fragment .fade-in}
+<video src="images/hw_cat_rf.mp4" controls width="100%"></video>
+:::
+
+:::
+
+::: {.column width="50%"}
+
+::: {.fragment .fade-in}
+Region in the sensory space that modulates the response of a neuron
+![](images/rf.png){width="100%"}
+:::
+
+:::
+:::
+
+<div class="" style="position:absolute; bottom:20px; right:20px; font-size:0.6em; color:gray;">
+Hubel and Wiesel (1958)
+</div>
+
+::: notes
+Early landmark experiments by Hubel and Wiesel demonstrated that neurons are not equally responsive to all stimuli. In this experiment, moving bars of light were presented across the visual field of a cat while recording from neurons in the visual cortex. As you'll hear from the clicking sounds, some stimulus locations evoked much stronger responses than others.
+
+This observation led to the concept of the spatiotemporal receptive field—the region of sensory space and time over which a stimulus influences a neuron's response.
+
+:::
+
+
+## Linear description to predict neural responses
+
+::: {.columns}
+
+::: {.column width="50%"}
+Linear Stage
+![](images/rf.png){width="100%"}
+
+<div class="stack-eq">
+$$
+{\mathcal{L}} (t) = 
+\iiint dxdyd\tau\,
+\mathcal{K}(x,y,\tau)\,
+\mathcal{S}(x,y,t-\tau)
+$$
+</div>
+
+:::
+
+::: {.column width="25%"}
+Non-linear stage
+![](images/nonlinear.png){width="100%"}
+
+<div class="stack-eq">
+$$
+\lambda(t) = f(\mathcal{L}(t))
+$$
+</div>
+
+:::
+
+
+::: {.column width="25%"}
+Probabilistic spiking
+![](images/prob.png){width="100%"}
+<div class="stack-eq">
+$$
+\mathrm{Spike} = \begin{cases}
+         1 & \text{if } \lambda(t) > x_r \\
+        0 & \text{otherwise}
+    \end{cases}
+$$
+</div>
+
+:::
+:::
+
+$$
+\boxed{
+\mathcal{K} \sim \text{Receptive Field}
+}
+$$
+
+<div class="" style="position:absolute; bottom:20px; right:20px; font-size:0.6em; color:gray;">
+Schwartz et al. 2006
+</div>
+
+::: notes
+We can formalize this relationship using a computational framework called the Linear–Nonlinear–Poisson, or LNP, model. In this model, the stimulus is first filtered by a linear kernel that captures the neuron's spatiotemporal preferences. The filtered output is then passed through a nonlinear function to produce an instantaneous firing rate, from which spikes are generated probabilistically using a Poisson process.
+
+Therefore, estimating the receptive field essentially means estimating this linear filter, which allows us to predict neuronal responses to new stimuli.
+:::
+
+
+## RF estimation <span class="underline-fragment fragment" data-fragment-index="1">using reverse correlation studies</span>
 
 ::: {.columns}
 
 ::: {.column width="40%"}
 
-![](images/rf.png){width="100%"}
+<div class="fragment fade-in" data-fragment-index="1">
+
+- Spatio-temporal uncorrelated (white) stimulus ensemble
+
+</div>
+
+<div class="fragment fade-in" data-fragment-index="3">
+
+- Collect stimulus frames preceding each spike
+
+</div>
+
+<div class="fragment fade-in" data-fragment-index="4">
+
+- Average the stimulus ensemble (Spike-Triggered Average)
+
+</div>
+
+<div class="fragment fade-in" data-fragment-index="5">
+
+- Estimate higher-order structure using Spike-Triggered Covariance
+
+</div>
 
 :::
 
-::: {.column width="20%"}
+::: {.column width="60%"}
+
+<div class="r-stack">
+
+![](images/rev_corr_1.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%"}
+
+![](images/rev_corr_2.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
+
+![](images/rev_corr_3.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%"}
+
+![](images/rev_corr_4.png){.fragment .fade-in data-fragment-index="4" width="100%"}
+
+![](images/rev_corr_5.png){.fragment .fade-in data-fragment-index="5" width="100%"}
+
+</div>
+
+::: {.fragment .fade-in data-fragment-index="4"}
+
+<div class="stack-eq">
 
 $$
-\begin{aligned}
-\lambda(t)
-&= \lambda_0 \\
-&\quad +
-\underbrace{
-\iiint dxdyd\tau\,
-\mathcal{K}(x,y,\tau)\,
-\mathcal{S}(x,y,t-\tau)
-}_{\mathcal{L}}
-\end{aligned}
+\mathrm{STA}(\tau)=
+\frac{1}{N_s}
+\sum_{i=1}^{N_s}
+\mathbf{s}(t_i-\tau)
 $$
 
+</div>
+
+:::
+
 :::
 
 :::
 
-## RF estimation <span class="underline-fragment fragment" data-fragment-index="1"> using reverse correlation studies</span>
+<div style="position:absolute; bottom:20px; right:20px; font-size:0.6em; color:gray;">
+Schwartz et al. (2006)
+</div>
 
-## Questions
+::: notes
+Given this forward model, the inverse problem naturally follows. Instead of predicting spikes from a known receptive field, we now ask: Can we recover the receptive field from the observed spikes?
 
-- 1. Can computational models help us in modelling and inferring receptive fields?
-- 2. What do these models tell us about the complex structure of teh receptive fields?
+Since we assume that neuronal firing depends on the presented stimulus, the stimulus and the spikes are correlated. This allows us to perform reverse correlation analysis.
+
+In practice, we present a large ensemble of spatially and temporally uncorrelated stimuli, record the neuron's spike times, and collect the stimulus frames that preceded each spike. Averaging these frames yields the Spike-Triggered Average (STA), which provides an estimate of the neuron's linear receptive field.
+
+More advanced methods, such as Spike-Triggered Covariance (STC), can identify additional stimulus features that contribute to the neuronal response. However, in this thesis, I focus primarily on the Spike-Triggered Average as the key method for recovering spatiotemporal receptive fields.
+
+:::
+
+## The Scientific Question
+Previous experimental methods lack:
+
+- Fine spatio-temporal resolution
+- Long term stimulation and recording capabilities
+- Experimental flexibility and affordability
+
+<div class="card" style="font-size:1.1em; padding:1.2em;">
+Can a
+[flexible experimental platform]{.fragment .highlight-red}
+using a
+[biological surrogate of the brain]{.fragment .highlight-blue}
+reveal how neuronal structure relates to function?
+
+</div>
+
+::: notes
+ Although years of work has gone into understanding such receptive fields using both theoretical and experimental models, the biggest caveat that all previous methods lack 
+Fine spatial-temporal resolution
+Long term non-invasive recording capabilities
+Experimental flexibility and affordability 
+So the main aim of my thesis was asking the following question :
+Can we use a controllable and flexible experimental platform which uses a biological surrogate of the brain to probe neuronal stimulus selectivity, or receptive fields, and use these measurements to gain insight into neuronal structure and function?
+
+:::
 
 ## Project Objectives
 
@@ -119,7 +343,7 @@ $$
 
 ::: {.column width="33%"}
 
-<div class="fragment fade-in card" data-fragment-index="1">
+<div class="fragment fade-in card" data-fragment-index="2">
 <div class="icon">🔗</div>
 ### Pipeline
 Large-scale reverse correlation analysis on recorded neural data — Receptive Field Kit
@@ -129,7 +353,7 @@ Large-scale reverse correlation analysis on recorded neural data — Receptive F
 
 ::: {.column width="33%"}
 
-<div class="fragment fade-in card" data-fragment-index="2">
+<div class="fragment fade-in card" data-fragment-index="1">
 <div class="icon">⚡</div>
 ### Stimulation
 Design, construct and validate a device for neuro-stimulation experiments — HD MANTIS
@@ -149,35 +373,105 @@ Sterile culturing and maintenance of cell cultures for large-scale recordings
 
 :::
 
+::: notes
+This defined the 3 major project objectives;
+First, to design, build, and validate an experimental platform capable of performing controlled stimulation and electrophysiological recordings.
+Second, to develop the computational and data analysis pipeline required to estimate and interpret receptive fields.
+And finally, to establish and maintain a biological surrogate model on which these experiments could be performed.
+
+:::
+
+## Outline
+
+- Introduction
+- **Parallel tools**
+- Development and validation of a new system
+- Experiments and results
+- Conclusions
+
 ## Inferring RF from forward models 
-LNP spike trains with a ground truth filter
-
-## Inferring RF from forward models - Network models
-Using GLMs to recover RF with additional information 
-
-
-
-## Which Surrogate?
-Light sensitized dissociated cortical cultures plated on a multi electrode array
-
-## Chronic light perturbation experiments
 
 ::: {.columns}
 
-::: {.column width="60%"}
-
-::: {.fragment .fade-in}
-![](images/lightdisco.gif){width="100%"}
-Light Disco Ver. 1.0
+::: {.column width="30%"}
+![](images/receptive_field_filters_hor.png){.fragment .fade-in data-fragment-index="1" width="100%"}
 :::
 
+::: {.column width="70%"}
+![](images/lnp_stas.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
+Recovered STAs
+:::
 :::
 
-::: {.column width="40%"}
+::: notes
+Before moving to the experimental platform and the biological results, I would first like to demonstrate that the analysis pipeline performs as expected.
+To validate the receptive field estimation, I generated simulated spike trains using the LNP model with known ground-truth receptive fields.
+Since the true receptive field is already known, applying Spike-Triggered Average should recover it accurately. As shown here, the recovered filters closely match the ground truth, confirming that the implementation behaves as expected.
+
+:::
+
+
+## Controllable cortical cultures as a biological surrogate
+
+
+::: {.columns}
+
+::: {.column .fragment .fade-in data-fragment-index="1" width="50%"}
+#### Dissociated cortical cultures from mice
+![](images/025x_3C_10x_objective_center_yfp.jpg){width="100%"}
+:::
+::: {.column .fragment .fade-in data-fragment-index="2" width="50%"}
+#### Optogenetics
+<div class="r-stack">
+![](images/optogeentics_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
+
+![](images/optogeentics_2.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%"}
+
+</div>
+:::
+:::
+
+<div class="" style="position:absolute; bottom:0px; right:20px; font-size:0.6em; color:gray;">
+Deisseroth et al. (2012)
+</div>
+
+::: notes
+The second requirement was to establish a controllable biological model.
+For this, I used dissociated cortical neurons isolated from the cerebral hemispheres of postnatal mice. These neurons were cultured on high-density multielectrode arrays, where they self-organize into functional two-dimensional neuronal networks.
+The multielectrode array allows simultaneous recording of extracellular electrical activity from many locations across the culture. The fluorescence image shown here illustrates one such mature neuronal network.
+
+The next question is how to stimulate these neurons in a precise and reproducible manner.
+Although electrical stimulation is widely used, it lacks cellular specificity and often introduces stimulation artifacts into the recordings.
+Instead, I use optogenetics, a non-invasive technique that enables precise optical control of genetically targeted neurons with excellent spatial and temporal resolution.
+In this approach, neurons are transduced with a viral vector expressing light-sensitive ion channels, known as opsins. When illuminated with light of the appropriate wavelength, these channels open and depolarize the neuron, generating action potentials.
+In this work, I use the green-light-sensitive excitatory channelrhodopsin called ChReef, which provides reliable optical activation of the cultured neurons.
+
+
+:::
+
+## Pre-existing chronic light perturbation experiments
+
+::: {.columns}
+
+::: {.column width="50%"}
+<div style="position:relative; width:100%; height:500px;">
+  <img src="images/lightdisco.gif"
+       class="fragment fade-in"
+       data-fragment-index="1"
+       style="position:absolute; inset:0; margin:auto; max-width:100%; max-height:100%;">
+</div>
+
+Stimulus Resolution : 120 μm (16x16) <br> MEA Resolution : 200 μm (8x8)
+:::
+
+::: {.column width="50%"}
 
 ::: {.fragment .fade-in}
-![](images/oldstas.png){width="100%"}
-Receptive Field estimates
+<div style="padding-left:40px;">
+![](images/oldstas.png){width="80%" .fade-in-then-out data-fragment-index="2" fig-align="center"
+}
+</div>
+<br> Receptive Field estimates
 :::
 :::
 
@@ -186,6 +480,13 @@ Receptive Field estimates
 <div class="" style="position:absolute; bottom:20px; right:20px; font-size:0.6em; color:gray;">
 Dr. Andreas Neef
 </div>
+
+::: notes
+As I mentioned earlier, several experimental platforms already exist for combining optogenetic stimulation with electrophysiological recordings. This figure shows one such long-term stimulation setup.
+Using this system, it is possible to estimate receptive fields. However, the recovered STAs primarily localize the positions of active neurons and do not resolve fine cellular or subcellular features. In other words, the spatial resolution of the stimulation becomes the limiting factor.
+To probe receptive fields at much finer scales, a new experimental platform was required.
+:::
+
 
 ## Goal : Develop a high resolution optical stimulation system
 
@@ -233,7 +534,24 @@ Incubator compatible
 
 :::
 
-## High Density Multielectrode Array based Neuronal Targeting via Illuminated Stimuli
+::: notes
+This led to four major design requirements:
+First, optical stimulation with cellular to subcellular spatial resolution.
+Second, simultaneous high-density electrical recordings over a large area.
+Third, precise synchronization between the optical stimulation and electrophysiological recordings.
+And finally, a modular system compact enough to operate inside a standard cell-culture incubator.
+:::
+
+## Outline
+
+- Introduction
+- Parallel tools
+- **Development and validation of a new system**
+- Experiments and results
+- Conclusions
+
+
+## [H]{.fragment .highlight-blue data-fragment-index="1"}igh [D]{.fragment .highlight-blue data-fragment-index="1"}ensity [M]{.fragment .highlight-blue data-fragment-index="1"}ultielectrode [A]{.fragment .highlight-blue data-fragment-index="1"}rray based [N]{.fragment .highlight-blue data-fragment-index="1"}euronal [T]{.fragment .highlight-blue data-fragment-index="1"}argeting via [I]{.fragment .highlight-blue data-fragment-index="1"}lluminated [S]{.fragment .highlight-blue data-fragment-index="1"}timuli system
 
 ::: {.columns}
 
@@ -241,13 +559,13 @@ Incubator compatible
 
 <div class="r-stack">
 
-![](images/master.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%"}
+![](images/master.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
 
-![](images/master_optics.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
+![](images/master_optics.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%"}
 
-![](images/master_control.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%"}
+![](images/master_control.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%"}
 
-![](images/master_record.png){.fragment .fade-in data-fragment-index="4" width="100%"}
+![](images/master_record.png){.fragment .fade-in data-fragment-index="5" width="100%"}
 
 </div>
 
@@ -257,34 +575,49 @@ Incubator compatible
 
 <div class="r-stack">
 
-::: {.fragment .fade-in-then-out data-fragment-index="2"}
-### High Definition OLED Display
+::: {.fragment .fade-in-then-out data-fragment-index="3"}
+#### High Definition OLED Display
 ![](images/oled.png){width="80%"}
 :::
 
-::: {.fragment .fade-in-then-out data-fragment-index="3"}
-### Raspberry Pi
+::: {.fragment .fade-in-then-out data-fragment-index="4"}
+#### Raspberry Pi
 ![](images/rpi.png){width="100%"}
 :::
 
-::: {.fragment .fade-in data-fragment-index="4"}
-### Maxwell suite
-![](images/maxwell_suite_image.png){width="100%"}
+::: {.fragment .fade-in data-fragment-index="5"}
+#### Maxwell suite
+![](images/maxonechip.png){width="100%"}
+Total Electrodes : 26000 (3.85 x 2.10 $\mathrm{mm}^2$)<br>
+Recording electrodes : 1000 <br>
+Electrode pitch : 17.5$\mu\mathrm{m}$
 :::
 
 </div>
 
 :::
 
+
 :::
 
-## Optics - Light Power Intensity Measurements 
+::: notes
+The result is the HD-MANTIS platform—High-Density Microelectrode Array-based Neuronal Targeting via Illuminated Stimuli—which integrates high-resolution optical stimulation with large-scale electrophysiological recording. 
+The system consists of three main components.
+The first, and most important, is the optical stimulation module. It is based on a microscope-like optical path, where the illumination source is a high-definition monochrome green OLED display. The display contains approximately two million pixels, each about 6 micrometres in size, enabling highly precise spatial patterning of light.
+The second component is the control system, built around a Raspberry Pi. It generates the stimulation patterns through its HDMI interface while its programmable GPIO pins provide hardware triggering and synchronization with the recording system.
+Finally, neuronal activity is recorded using the Maxwell high-density microelectrode array platform, which provides approximately one thousand simultaneous recording channels with an electrode pitch of 17.5 micrometres.
+
+Having introduced the overall architecture of the HD-MANTIS system, I will now demonstrate how the key engineering requirements defined earlier were achieved and experimentally validated.
+
+:::
+
+## Optical system charecterisation 
 
 ::: {.columns}
 
 ::: {.column width="60%"}
 
-### Response verification {.fragment .fade.in data-fragment-index="1"}
+#### Response verification {.fragment .fade.in data-fragment-index="1"}
 <div class="r-stack">
 
 ![](images/stim_irr_verf.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
@@ -293,14 +626,13 @@ Incubator compatible
 
 </div>
 
-E = 0.013 mW/mm2
 :::
 
 ::: {.column width="40%"}
 
-### Different Lenses {.fragment .fade.in data-fragment-index="4"}
+#### Different Lenses {.fragment .fade.in data-fragment-index="4"}
 ::: {.fragment .fade-in data-fragment-index="5"}
-<canvas id="lens-chart" width="900" height="800"></canvas>
+<canvas class="lens-chart" width="900" height="800"></canvas>
 
 :::
 
@@ -310,65 +642,106 @@ E = 0.013 mW/mm2
 ::: {.fragment #show-fit data-fragment-index="7"}
 :::
 
+::: {.fragment #highlight-point data-fragment-index="8"}
 :::
 
 :::
 
+:::
+
+<div style="margin-top:-30px;">
+::: {.fragment .fade-in data-fragment-index="3"}
+$$
+\boxed{
+\mathrm{LPD} = 0.013~\mathrm{mW}/\mathrm{mm}^2
+}
+$$
+:::
+</div>
+
+::: notes
+Every opsin requires a minimum light intensity to evoke neuronal activity. However, the activation threshold of the ChReef variant used in this work has not been well characterized.
+To determine this threshold, I transduced cortical cultures with ChReef and illuminated them using full-field flashes with a controlled duty cycle while recording the electrophysiological response.
+Here, the electrode trace shows robust action potentials that are tightly time-locked to the optical stimulus, confirming that the delivered light intensity is sufficient to activate the opsin.
+Having established the required optical power, I then characterized different objective lenses. The measured light intensity follows the expected inverse-square dependence on the lens f-number. Based on these measurements, I selected a 16 mm triplet lens, which provides the required optical power while meeting the system's design constraints.
+
+:::
 
 
-
-## Optics - Resolution Measurements
+## Optical system charecterisation
 
 ::: {.columns}
 
-::: {.column width="30%"}
+::: {.column width="40%"}
 
-### On-axis PSF
-<div class="r-stack">
+#### Different Lenses 
 
-![](images/psf_on_axis.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%"}
+<canvas class="lens-chart" width="900" height="800"></canvas>
 
-![](images/psf_on_axis_fits.png){.fragment .fade-in data-fragment-index="2" width="100%"}
 
-</div>
 
-On-axis FWHM : $10.8 \mu m$
-
+::: {.fragment #show-points }
 :::
+
+::: {.fragment #show-fit }
+:::
+
+::: {.fragment #highlight-point}
+:::
+
+
+<div class="stack-eq" style="margin-top:55px;">
+::: {.fragment .fade-in data-fragment-index="1"}
+$$
+\boxed{
+\text{Theoretical Limit}~:~1.9 \mu\mathrm{m}
+}
+$$
+:::
+</div>
+:::
+
 
 ::: {.column width="60%"}
 
-### Spatial Inhomogeneity of the PSFs
-
-![](images/psf_spatial_dist.png){.fragment width="80%" fig-align="center"}
-
-:::
-
-:::
-
-## Software stack - Overview
-
+#### On-axis Point Spread Function
 <div class="r-stack">
 
-![](images/softstack/software_stack_master.png){.fragment .fade-in-then-out data-fragment-index="1" width="90%" fig-align="center"}
+![](images/psf_on_axis.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%"}
 
-![](images/softstack/software_stack_master_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="90%" fig-align="center"}
-
-![](images/softstack/software_stack_master_2.png){.fragment .fade-in-then-out data-fragment-index="3" width="90%" fig-align="center"}
-
-![](images/softstack/software_stack_master_3.png){.fragment .fade-in-then-out data-fragment-index="4" width="90%" fig-align="center"}
-
-![](images/softstack/software_stack_master_4.png){.fragment .fade-in-then-out data-fragment-index="5" width="90%" fig-align="center"}
-
-![](images/softstack/software_stack_master_5.png){.fragment .fade-in-then-out data-fragment-index="6" width="90%" fig-align="center"}
-
-![](images/softstack/software_stack_master_6.png){.fragment .fade-in-then-out data-fragment-index="7" width="90%" fig-align="center"}
-
-
+![](images/psf_on_axis_fits.png){.fragment .fade-in data-fragment-index="3" width="100%"}
 
 </div>
 
-## Software stack - Stimulus modes
+<div class="stack-eq" style="margin-top:-30px;">
+::: {.fragment .fade-in data-fragment-index="4"}
+$$
+\boxed{
+\text{On-axis FWHM}~:~10.8 \mu\mathrm{m}
+}
+$$
+:::
+</div>
+:::
+
+:::
+
+
+::: notes
+Every opsin requires a minimum light intensity to evoke neuronal activity. However, the activation threshold of the ChReef variant used in this work has not been well characterized.
+To determine this threshold, I transduced cortical cultures with ChReef and illuminated them using full-field flashes with a controlled duty cycle while recording the electrophysiological response.
+Here, the electrode trace shows robust action potentials that are tightly time-locked to the optical stimulus, confirming that the delivered light intensity is sufficient to activate the opsin.
+Having established the required optical power, I then characterized different objective lenses. The measured light intensity follows the expected inverse-square dependence on the lens f-number. Based on these measurements, I selected a 16 mm triplet lens, which provides the required optical power while meeting the system's design constraints.
+
+Delivering sufficient optical power alone is not enough. To stimulate individual neurons, the system must also provide adequate spatial resolution.
+Although the optical design predicts that each OLED pixel can be projected to approximately 1.9 micrometres, this assumes an ideal lens system.
+In practice, optical aberrations broaden the projected spot. To quantify this effect, I measured the point spread function across the field of view.
+By fitting Gaussian profiles to each measured spot, I estimated the full width at half maximum, which represents the practical optical resolution of the system.
+The measurements show a practical resolution of approximately 11 micrometres. They also reveal increasing aberrations toward the edges of the field, whereas the on-axis spot remains nearly symmetric.
+:::
+
+
+## Stimulus modes
 
 
 ::: {.columns}
@@ -407,118 +780,342 @@ Sinusoidal gratings with variable grating and temporal parameters
 
 :::
 
-## Software stack - Stimulus modes - Poisson-Bernoulli Stimulus
+::: notes
+The software currently supports three classes of stimuli:
+Full-field flashing stimuli for system characterization,
+Poisson–Bernoulli stimuli for receptive field estimation,
+And oriented gratings for probing orientation selectivity.
 
-::: {.column width="30%"}
-<div class="fragment fade-in card" data-fragment-index="1">
-<div class="icon"><img src="images/stimmodes/pb_logo.png" alt="PB"></div>
-### Poisson-Bernoulli
-Random uncorrelated spatiotemporal block checkerboards. With p_on values for sparsity and different resolutions.
-</div>
 :::
 
+## Poisson-Bernoulli stimulus
+
+::: {.columns}
+
+::: {.column width="40%"}
+
+<div class="card">
+
+<div class="fragment fade-in" data-fragment-index="2">
+
+- **Binary checkerboard** stimulus with variable spatial resolution.
+
+</div>
+
+<div class="fragment fade-in" data-fragment-index="3">
+
+- Each block is **independently ON/OFF** every frame with probability $p_{\mathrm{on}}$.
+
+- **Spatially and temporally uncorrelated.**
+
+</div>
+
+</div>
+
+:::
 
 ::: {.column width="60%"}
-<div style="padding-left: 40px;">
 
-::: {.fragment .fade-in data-fragment-index="2"}
+<div style="padding-left: 80px; margin-top:100px;">
+
+<!-- ===================================================== -->
+<!-- Block size examples                                   -->
+<!-- ===================================================== -->
+
+::: {.fragment .fade-in-then-out data-fragment-index="2"}
 
 ::: {.columns}
 
 ::: {.column width="33%"}
-![](images/stimmodes/pb_stimulus_grid20.gif){width=95%}
+
+![](images/stimmodes/pb_stimulus_grid20.gif){width=95% fig-align="center"}
+
+<div class="stack-eq">
+
+$$
+\text{Block Size}=50~\text{px}
+$$
+
+$$
+20\times20
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
-![](images/stimmodes/pb_stimulus_grid40.gif){width=100%}
+
+![](images/stimmodes/pb_stimulus_grid40.gif){width=100% fig-align="center"}
+
+<div class="stack-eq">
+
+$$
+\text{Block Size}=25~\text{px}
+$$
+
+$$
+40\times40
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
-![](images/stimmodes/pb_stimulus_grid100.gif){width=100%}
+
+![](images/stimmodes/pb_stimulus_grid100.gif){width=100% fig-align="center"}
+
+<div class="stack-eq">
+
+$$
+\text{Block Size}=10~\text{px}
+$$
+
+$$
+100\times100
+$$
+
+</div>
+
 :::
 
 :::
-:::
 
-<div style="margin-top: -50px;">
+:::
+<!-- ===================================================== -->
+<!-- Probability examples                                  -->
+<!-- ===================================================== -->
+
+<div style="margin-top:-430px;">
+
 ::: {.fragment .fade-in data-fragment-index="3"}
+
 ::: {.columns}
 
 ::: {.column width="33%"}
-![](images/stimmodes/pb_stimulus_p0.05.gif){width=100%}
+
+![](images/stimmodes/pb_stimulus_p0.05.gif){width=100% fig-align="center"}
+
+<div class="stack-eq">
+
+$$
+p_{\mathrm{on}}=0.05
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
-![](images/stimmodes/pb_stimulus_p0.1.gif){width=100%}
+
+![](images/stimmodes/pb_stimulus_p0.1.gif){width=100% fig-align="center"}
+
+<div class="stack-eq">
+
+$$
+p_{\mathrm{on}}=0.10
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
-![](images/stimmodes/pb_stimulus_p0.2.gif){width=100%}
+
+![](images/stimmodes/pb_stimulus_p0.2.gif){width=100% fig-align="center"}
+
+<div class="stack-eq">
+
+$$
+p_{\mathrm{on}}=0.20
+$$
+
+</div>
+
 :::
 
 :::
-:::
-</div>
-</div>
+
 :::
 
-## Software stack - Stimulus modes - Orientational gratings
+</div>
+
+</div>
+
+:::
+
+:::
+
+::: notes
+Since receptive field estimation using Spike-Triggered Average assumes uncorrelated inputs, the primary stimulus used in this work is the Poisson–Bernoulli stimulus.
+
+Each frame consists of a binary pattern defined by two parameters: the stimulus block size, which determines the spatial resolution, and the activation probability, PonP_{\mathrm{on}}Pon​, which controls the fraction of illuminated blocks in each frame.
+
+As shown here, decreasing the block size increases the spatial resolution, while changing PonP_{\mathrm{on}}Pon​ controls the sparsity of the stimulus.
+
+Choosing these parameters involves a trade-off. The stimulus should be sparse enough to isolate individual neurons, yet sufficiently dense to provide enough variability for reliable receptive field estimation. This is kept in mind while doing experiments.
+:::
+
+## Orientational grating stimulus
+
+::: {.columns}
 
 ::: {.column width="30%"}
-<div class="fragment fade-in card" data-fragment-index="1">
-<div class="icon"><img src="images/stimmodes/og_logo.png" alt="PB"></div>
-### Orientational Gratings
-Sinusoidal gratings with controllable direction, wavelength and frequency.
+
+<div class="card">
+
+<div class="fragment fade-in" data-fragment-index="2">
+
+- **Orientation** ($\theta$) determines the drift direction of the grating.
+
 </div>
+
+<div class="fragment fade-in" data-fragment-index="3">
+
+- **Spatial wavelength** ($\lambda$) controls the spacing between adjacent stripes.
+
+</div>
+
+</div>
+
 :::
 
-::: {.column width="67%"}
-<div style="padding-left: 40px;">
+::: {.column width="70%"}
 
-::: {.fragment .fade-in data-fragment-index="2"}
+<div style="padding-left:40px; margin-top:150px">
+
+<!-- ===================================================== -->
+<!-- Orientation -->
+<!-- ===================================================== -->
+
+::: {.fragment .fade-in-then-out data-fragment-index="2"}
 
 ::: {.columns}
 
 ::: {.column width="33%"}
-![](images/stimmodes/grating_dir0deg.gif){width=110%}
+
+![](images/stimmodes/grating_dir0deg.gif){width=100%}
+
+<div class="stack-eq fragment fade-in-then-out" data-fragment-index="2">
+
+$$
+\theta = 0^\circ
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
+
 ![](images/stimmodes/grating_dir45deg.gif){width=100%}
+
+<div class="stack-eq fragment fade-in-then-out" data-fragment-index="2">
+
+$$
+\theta = 45^\circ
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
+
 ![](images/stimmodes/grating_dir90deg.gif){width=100%}
+
+<div class="stack-eq fragment fade-in-then-out" data-fragment-index="2">
+
+$$
+\theta = 90^\circ
+$$
+
+</div>
+
 :::
 
 :::
+
 :::
 
-<div style="margin-top: -50px;">
+<!-- ===================================================== -->
+<!-- Wavelength -->
+<!-- ===================================================== -->
+
+<div style="margin-top:-280px;">
+
 ::: {.fragment .fade-in data-fragment-index="3"}
+
 ::: {.columns}
 
 ::: {.column width="33%"}
+
 ![](images/stimmodes/grating_wl100px.gif){width=100%}
+
+<div class="stack-eq">
+
+$$
+\lambda = 100~\mathrm{px}
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
+
 ![](images/stimmodes/grating_wl200px.gif){width=100%}
+
+<div class="stack-eq">
+
+$$
+\lambda = 200~\mathrm{px}
+$$
+
+</div>
+
 :::
 
 ::: {.column width="33%"}
+
 ![](images/stimmodes/grating_wl400px.gif){width=100%}
+
+<div class="stack-eq">
+
+$$
+\lambda = 400~\mathrm{px}
+$$
+
+</div>
+
 :::
 
 :::
+
 :::
-</div>
+
 </div>
 
-$$
-\boxed{f(x, y, t) = \sin\!\left(\frac{2\pi}{\lambda}
-\left(x\cos\theta + y\sin\theta\right) + \omega t\right)}
-$$
+<!-- ===================================================== -->
+<!-- Equation -->
+<!-- ===================================================== -->
+
+
+</div>
+
+:::
+
+:::
+
+
+::: notes
+The third stimulus mode is an oriented grating generator, which is designed to probe the orientation stimulus selectivity of neurons.
+These stimuli are generated directly on the GPU using programmable shaders. Rather than storing each frame explicitly, the shader computes the intensity of every pixel from a mathematical function describing a sinusoidal grating.
+By varying the orientation, spatial wavelength, and spatial frequency of the grating, a wide range of visual stimuli can be generated efficiently in real time.
+Here, I show examples of gratings with different orientations and spatial wavelengths that can be presented during experiments.
+Together with the poisson bernoulli stimulus the software stack is capable of performing key experiments.
+
 :::
 
 
@@ -527,13 +1124,13 @@ $$
 Frame times are logged directly from the GPU
 
 ::: {.column width="50%"}
-### Setup
+#### Setup
 ![](images/sync/sync_setup.png){.fragment .fade-in data-fragment-index="1" width="100%" fig-align="center"}
 
 :::
 
 ::: {.column width="50%"}
-### Oscilloscope traces
+#### Oscilloscope traces
 <div class="r-stack">
 
 ![](images/sync/sync1.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
@@ -542,18 +1139,42 @@ Frame times are logged directly from the GPU
 </div>
 :::
 
-## Fluctuations of frame presentation rates
+
+::: notes
+The next engineering requirement is precise synchronization between the stimulation and recording systems.
+Since the optical display and the electrophysiology hardware operate on independent clocks, they do not naturally share a common time base. For receptive field estimation, where spike timing is compared to the presented stimulus with millisecond precision, accurate synchronization is essential.
+To achieve this, a digital synchronization pulse is generated every time a stimulus frame is presented and transmitted directly to the Maxwell recording system.
+I first validated this approach using periodic flashing stimuli. A photodiode measured the actual light output of the display, while an oscilloscope simultaneously recorded the synchronization pulses. As shown here, the synchronization events closely match the timing of the optical stimulus.
+For more realistic stimuli, such as the Poisson–Bernoulli sequences, the frame intervals are no longer perfectly periodic because of small computational fluctuations during frame generation. These fluctuations are approximately 1 millisecond, as shown by the distribution of synchronization intervals.
+
+:::
+
+
+## Synchronisation quality
 
 ::: {.column width="50%"}
-### Distributions of FPR
-<div id="boxplot" style="width:800px;height:600px;"></div>
+- For aligment a linear transformation between stimulus events and recorded events was performed
 
-::: {.fragment #show-boxes }
-:::
+$$
+t_{\mathrm{rec}} = \mathrm{a}~ t_{\mathrm{stim}} + \mathrm{b}
+$$
+
+
+- Residuals were measured as
+
+$$
+\mathrm{residual} = t_{\mathrm{mea}} - {t_{\mathrm{rec}}}
+$$
+
+and grouped as 
+<span style="color:#5470C6;">< $1~\mathrm{ms}$ </span>,
+<span style="color:#91CC75;">< $2~\mathrm{ms}$ </span> and
+<span style="color:#EE6666;">< $5~\mathrm{ms}$ </span> 
+
 :::
 
 ::: {.column width="50%"}
-### Quality of Sync.
+
 <div id="barplot" style="width:900px;height:600px;"></div>
 
 ::: {.fragment #bar-reveal-1}
@@ -564,27 +1185,147 @@ Frame times are logged directly from the GPU
 :::
 :::
 
+::: notes
+The important question, however, is how accurately these events are captured by the recording system.
+To quantify this, I aligned the stimulus timestamps with the recorded synchronization events and calculated the residual timing error.
+Across multiple recordings, more than 98% of synchronization events were recorded with an error below 1 millisecond, demonstrating that the system provides reliable temporal alignment for receptive field mapping experiments.
+
+:::
+
+## Mechanical design and incubator compatibility
+::: {.column width="50%"}
+<model-viewer
+    src="images/setup.glb"
+    camera-controls
+    auto-rotate
+    rotation-per-second="20deg"
+    shadow-intensity="1"
+    exposure="1"
+    style="width:100%; height:600px;">
+</model-viewer>
+:::
+
+::: {.column width="50%"}
+<div class="r-stack">
+![](images/design/real_photo.png){.fragment .fade-in-then-out data-fragment-index="1" width="70%" fig-align="center"}
 
 
-## {.center}
 
-## Results
+</div>
+:::
+
+::: aside
+Josephine Barbery
+:::
+
+::: notes
+Finally, the system is designed to fit into an incubator. Design attributes to Josphine barbery. The mechanical system primarily contains a focal stage and an optical column and fits as the photographs shows it neatly fits inside an incubtator.
+
+:::
+
+## Engineering requirements achieved
+
+::: {.columns}
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="1">
+<div class="icon">🎯</div>
+
+### Resolution
+
+**~11 μm**
+
+Sub-cellular stimulus delivery
+
+[✓ Achieved]{.fragment  .highlight-green data-fragment-index="1"}
+
+</div>
+
+:::
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="2">
+<div class="icon">⚡</div>
+
+### Recording
+
+1000 electrodes
+
+High-throughput acquisition
+
+[✓ Achieved]{.fragment .highlight-green data-fragment-index="1"}
+</div>
+
+:::
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="3">
+<div class="icon">⏱️</div>
+
+### Synchronization
+
+Frame-accurate timing
+
+[✓ Achieved]{.fragment .highlight-green data-fragment-index="1"}
+</div>
+
+:::
+
+::: {.column width="25%"}
+
+<div class="fragment fade-in card" data-fragment-index="4">
+<div class="icon">🧫</div>
+
+### Environment
+
+Incubator compatible system
+
+[✓ Achieved]{.fragment .highlight-green data-fragment-index="1"}
+</div>
+
+:::
+
+:::
+
+## Outline
+
+- Introduction
+- Parallel tools
+- Development and validation of a new system
+- **Experiments and results**
+- Conclusions
+
+::: notes
+Having established and validated the experimental platform, I will now present some of the key biological results obtained using HD-MANTIS 
+:::
 
 ## Results - Recording fidelity of the Maxwell System
 ::: {.column width="60%"}
-### Spontaneous activity DIV 20
+#### Spontaneous activity DIV 20
 ![](images/results/spontaneous_activity_P004474_DIV20_100s.png){.fragment .fade-in data-fragment-index="1" width="100%" fig-align="left"}
 :::
 
-::: {.column width="40%"}
-### Analysis
+::: {.column .fragment .fade-in data-fragment-index="2" width="40%"}
+#### Analysis
 - Only units with > 1000 spikes are selected for analysis
-- The stimulus ensemble is mean centered first
 - All STAs are z-scored as
-
 $$
 \hat{k}(\mathbf{x}, \tau_k) = \frac{k(\mathbf{x}, \tau_k) - \mu_k}{\sigma_k}
 $$
+:::
+
+::: notes
+Before discussing receptive fields, I would first like to demonstrate the recording quality of the platform.
+This recording was obtained from a 20-day-old cortical culture. Each colour represents activity recorded from a different electrode, illustrating the large-scale parallel recordings that are possible with the Maxwell system.
+For the remainder of this presentation, I will focus on recording units that produced at least 1000 spikes, since reliable STA estimation requires sufficient spike counts.
+
+The activation probability, Pon was chosen to provide a balance between stimulus sparsity and information content. It is low enough to selectively stimulate small regions, yet high enough to maintain sufficient stimulus variability for reliable receptive field estimation.
+
+Finally, all receptive fields are displayed as z-score normalized STAs to improve visualization of the underlying structure.
+
 :::
 
 ## Increasing stimulus resolution increase STA features
@@ -598,6 +1339,8 @@ $$
 
 ![](images/results/res_control/master_res_control_3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
 
+![](images/results/res_control/master_res_control_4.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+
 </div>
 
 
@@ -606,37 +1349,59 @@ $$
 ::: {.column width="45%"}
 - Experiment duration : 15 min
 - Approx spikes collected  : ~ 2000
+- $p_{\mathrm{on}}$ = 0.1
+- STA noise decreases by ~ $1/\sqrt{N_s}$
+:::
+
+::: notes
+My first experiment investigates how stimulus resolution affects receptive field estimation.
+Here, the stimulus block size is progressively decreased while keeping the activation probability fixed at 0.1.
+As the stimulus resolution increases, progressively finer receptive field structures become visible.
+However, another important factor is the number of recorded spikes. Since the variance of the STA decreases proportionally to 1/N1/\sqrt{N}1/N​, longer recordings substantially improve the quality of the recovered receptive fields.
+
+
+This motivated the long-duration experiments that I will show next.
+
 :::
 
 ## High resolution low noise STAs reveal complex structures
 ::: {.column width="55%"}
 <div class="r-stack">
-![](images/results/complex_stas/master_complex_str.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/master_complex_str_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
+![](images/results/complex_stas/master_complex_str_2.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/master_complex_str_2.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+![](images/results/complex_stas/master_complex_str_3.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/master_complex_str_3.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+![](images/results/complex_stas/master_complex_str_4.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/master_complex_str_4.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
-
-![](images/results/complex_stas/master_complex_str_5.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+![](images/results/complex_stas/master_complex_str_5.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
 
 </div>
 :::
 
 ::: {.column width="40%"}
 <div class="r-stack">
-![](images/results/complex_stas/zoomed1.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+![](images/results/complex_stas/zoomed1.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/zoomed2.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+![](images/results/complex_stas/zoomed2.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/zoomed3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
+![](images/results/complex_stas/zoomed3.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/zoomed4.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+![](images/results/complex_stas/zoomed4.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
 </div>
 
+
+:::
+
+::: notes
+Long-duration recordings reveal highly complex spatiotemporal receptive fields.  Here I show four representative examples.
+
+Unlike conventional receptive fields that primarily localize neuronal position, these measurements reveal extended spatial structures.
+Long-duration recordings reveal highly structured spatiotemporal receptive fields.
+
+Some of the fine, localized features may reflect the morphology of the recorded neuron. Since the optogenetic actuator is expressed throughout the neuronal membrane, including dendritic processes, optical stimulation may capture responses originating from different parts of the same cell.
+
+However, larger-scale structures extending well beyond the dimensions of a single neuron are unlikely to represent morphology alone and more likely reflect network-mediated interactions or indirect activation through neighbouring neurons.
 
 :::
 
@@ -644,32 +1409,37 @@ $$
 
 ::: {.column width="55%"}
 <div class="r-stack">
-![](images/results/complex_stas/master_complex_str.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
 
-![](images/results/complex_stas/master_complex_str_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/master_inh_str_1.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
 
-![](images/results/Inh_subfields/master_inh_str_1.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/master_inh_str_2.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
 
-![](images/results/Inh_subfields/master_inh_str_2.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/master_inh_str_3.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
 
-![](images/results/Inh_subfields/master_inh_str_3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
-
-![](images/results/Inh_subfields/master_inh_str_4.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/master_inh_str_4.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
 
 </div>
 :::
 
 ::: {.column width="40%"}
 <div class="r-stack">
-![](images/results/Inh_subfields/zoomed_inh_1.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/zoomed_inh_1.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%" fig-align="center"}
 
-![](images/results/Inh_subfields/zoomed_inh_2.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/zoomed_inh_2.png){.fragment .fade-in-then-out data-fragment-index="2" width="100%" fig-align="center"}
 
-![](images/results/Inh_subfields/zoomed_inh_3.png){.fragment .fade-in-then-out data-fragment-index="5" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/zoomed_inh_3.png){.fragment .fade-in-then-out data-fragment-index="3" width="100%" fig-align="center"}
 
-![](images/results/Inh_subfields/zoomed_inh_4.png){.fragment .fade-in-then-out data-fragment-index="6" width="100%" fig-align="center"}
+![](images/results/Inh_subfields/zoomed_inh_4.png){.fragment .fade-in-then-out data-fragment-index="4" width="100%" fig-align="center"}
 </div>
 
+
+:::
+
+::: notes
+Another interesting observation is the presence of inhibitory substructures.
+These appear as negative regions within the STA, indicating that stimulation of nearby locations suppresses the probability of firing.
+A plausible explanation is that optogenetic stimulation activates inhibitory interneurons, which subsequently suppress the recorded unit through the surrounding network.
+The diffuse appearance of these structures, even for recordings with very high spike counts, suggests that these responses are dominated by network interactions rather than direct optical activation.
 
 :::
 
@@ -677,26 +1447,15 @@ $$
 
 ::: {.column width="50%"}
 
-### Localization of STA - E.g. Unit 54
+#### Localization of STA 
 
 <div class="r-stack">
 
-<!-- State 1: image only -->
-<div class="fragment fade-out" data-fragment-index="2">
+<div class="fragment fade-out stack-frame" data-fragment-index="2">
 ![](images/results/electrical_foot/sta_ef_1.png){width="100%"}
 </div>
 
-<!-- State 2: image + equation -->
-<div class="fragment fade-in-then-out" data-fragment-index="2">
-![](images/results/electrical_foot/sta_ef_1.png){width="100%"}
-
-$$
-\text{Scaling factor}=\frac{17.5}{19.0}=0.92
-$$
-</div>
-
-<!-- State 3: second image -->
-<div class="fragment fade-in" data-fragment-index="3">
+<div class="fragment fade-in stack-frame margin-top=2em" data-fragment-index="2">
 ![](images/results/electrical_foot/sta_ef_2.png){width="80%"}
 </div>
 
@@ -704,6 +1463,308 @@ $$
 :::
 
 ::: {.column width="50%"}
-### Electrical footprint
 
+#### Electrical footprint
+
+<div class="r-stack">
+
+
+
+<div class="fragment fade-in-then-out stack-frame " data-fragment-index="4">
+![](images/results/electrical_foot/ef_ef_1.png){width="80%"}
+<div class="stack-eq">
+$$
+\bbox[0px,border:0px solid white]{\color{red}{\bar{v}_i(\alpha)}}=
+\frac{1}{N_s}\sum_{s=1}^{N_s}v_i(t_s+\alpha) \quad \alpha \in [-2,2]~\textrm{ms}
+$$
+</div>
+</div>
+
+<div class="fragment fade-in stack-frame" data-fragment-index="5">
+![](images/results/electrical_foot/ef_ef_2.png){width="80%"}
+</div>
+
+</div>
+
+:::
+
+::: notes
+The extended receptive fields naturally raise the question of whether they correspond to the physical morphology of the recorded neuron. 
+To investigate this, I first localized the receptive field using its peak response.
+I then computed the spike-triggered electrical footprint by averaging extracellular action potentials recorded across neighbouring electrodes.
+The peak-to-peak amplitudes produce an electrical image that approximates the morphology of the recorded unit.
+Comparing these electrical images with the optical receptive fields reveals several structural similarities, suggesting that the recovered receptive fields may indeed capture aspects of neuronal morphology.
+
+:::
+
+## Preliminary results for orientation selectivity
+
+<div class="unit-grid">
+
+<div class="chart-panel">
+<canvas id="unit870"></canvas>
+</div>
+
+<div class="chart-panel">
+<canvas id="unit787"></canvas>
+</div>
+
+<div class="chart-panel">
+<canvas id="unit970"></canvas>
+</div>
+
+<div class="chart-panel">
+<canvas id="unit890"></canvas>
+</div>
+
+</div>
+
+::: {.fragment #show-scatter}
+:::
+
+::: {.fragment #show-mean}
+:::
+
+::: notes
+Finally, I'd like to show a preliminary result demonstrating the flexibility of the platform.
+
+Here, instead of random stimuli, I presented drifting sinusoidal gratings at different orientations and measured the firing rate of individual recording units.
+
+In this example, the cell responds much more strongly to gratings oriented at 45° and 225° than to other orientations. This preference is consistent across repeated trials, as shown by the trial-by-trial responses and the average tuning curve.
+
+This is a surprising observation. In a dissociated cortical culture, there is no organized visual map or predefined orientation architecture as found in the visual cortex. Nevertheless, some neurons exhibit clear orientation preferences.
+
+One possible explanation is spontaneous symmetry breaking within the cultured network. This asymmetry could arise from the neuron's own morphology—for example, an asymmetric dendritic arbor—or from an asymmetric arrangement of its presynaptic inputs. At this stage, these remain hypotheses that require further investigation.
+:::
+
+## Conclusions
+- Designed and validated a cellular-resolution optical stimulation system using reverse correlation.
+- Integrated stimulation and high-density recording for medium-to-high throughput receptive field mapping.
+- Revealed detailed receptive field structure, including correlations with neuronal electrical morphology.
+- Preliminary evidence of orientation-selectivity.
+
+::: notes
+To conclude, this thesis has demonstrated the development of HD-MANTIS, a high-resolution optogenetic stimulation platform integrated with high-density electrophysiological recordings.
+The platform was experimentally validated with respect to optical performance, software control, synchronization, and biological compatibility.
+Using this system, I recovered spatiotemporal receptive fields at a spatial resolution that has not previously been explored in this experimental paradigm.
+The recovered structures suggest that high-resolution optogenetic stimulation may reveal not only functional receptive fields but also aspects of neuronal morphology and network organization.
+I believe this platform provides a flexible and cost-effective foundation for future studies investigating the relationship between neuronal structure and function.
+
+:::
+
+## Limitations and Future work
+
+- Improve optical resolution through refinement of the stimulation optics and optical alignment.
+- Implement hardware-based synchronization for robust timing between stimulation and recording.
+- Calibrate stimulus localization to precisely align projected stimuli with the recording array.
+- Adopt template-based spike sorting to improve single-cell isolation and increase the accuracy of receptive field and electrical structure analyses.
+  
+
+
+## Acknowledgements
+::: {.column width="80%"}
+![](images/ack.png){width="100%"}
+:::
+::: {.column width="20%"}
+:::
+
+## Additional slides
+
+## Appendix - Mean centering the stimulus ensemble 
+::: {.columns}
+
+::: {.column width="50%"}
+![](images/before_corr_lnp.png){.fragment .fade-in data-fragment-index="1" width="100%"}
+:::
+
+::: {.column width="50%"}
+![](images/after_corr_lnp.png){.fragment .fade-in data-fragment-index="2" width="100%"}
+:::
+:::
+
+
+## High resolution STAs from forward models
+::: {.columns}
+
+::: {.column width="33%"}
+![](images/sta_lnp_20x20.svg){.fragment .fade-in data-fragment-index="1" width="100%"}
+<div class="stack-eq">
+$$
+(20 \times 20)
+$$
+</div>
+:::
+::: {.column width="33%"}
+![](images/sta_lnp_40x40.svg){.fragment .fade-in data-fragment-index="1" width="100%"}
+<div class="stack-eq">
+$$
+(40 \times 40)
+$$
+</div>
+:::
+::: {.column width="33%"}
+![](images/sta_lnp_100x100.svg){.fragment .fade-in data-fragment-index="1" width="100%"}
+<div class="stack-eq">
+$$
+(100 \times 100)
+$$
+</div>
+:::
+
+:::
+
+::: notes
+I then evaluated the robustness of the pipeline by increasing the dimensionality of the stimulus and varying the number of recorded spikes. Across these conditions, the receptive fields were consistently recovered, demonstrating that the analysis pipeline is ready for experimental data.
+:::
+
+
+
+
+## Appendix - Resolution measurements
+
+::: {.columns}
+
+::: {.column width="50%"}
+
+#### On-axis Point Spread Function
+<div class="r-stack">
+
+![](images/psf_on_axis.png){.fragment .fade-in-then-out data-fragment-index="1" width="100%"}
+
+![](images/psf_on_axis_fits.png){.fragment .fade-in data-fragment-index="2" width="100%"}
+
+</div>
+
+:::
+
+::: {.column width="50%"}
+
+#### Spatial Inhomogeneity of the PSFs
+
+![](images/psf_spatial_dist.png){.fragment width="100%" fig-align="center"}
+
+:::
+
+:::
+::: {.fragment .fade-in data-fragment-index="2"}
+<div style="margin-top:-60px;">
+$$
+\boxed{
+\text{On-axis FWHM}~:~10.8 \mu\mathrm{m}
+}
+$$
+</div>
+:::
+
+
+::: notes
+Delivering sufficient optical power alone is not enough. To stimulate individual neurons, the system must also provide adequate spatial resolution.
+Although the optical design predicts that each OLED pixel can be projected to approximately 1.9 micrometres, this assumes an ideal lens system.
+In practice, optical aberrations broaden the projected spot. To quantify this effect, I measured the point spread function across the field of view.
+By fitting Gaussian profiles to each measured spot, I estimated the full width at half maximum, which represents the practical optical resolution of the system.
+The measurements show a practical resolution of approximately 11 micrometres. They also reveal increasing aberrations toward the edges of the field, whereas the on-axis spot remains nearly symmetric.
+:::
+
+
+## Frame times as a sync signal
+Frame times are logged directly from the GPU
+
+::: {.column width="50%"}
+#### Setup
+![](images/sync/sync_setup.png){width="100%" fig-align="center"}
+
+:::
+
+::: {.column width="50%"}
+#### Distributions of frame presentation rates
+<div id="boxplot" style="width:800px;height:600px;"></div>
+
+::: {.fragment #show-boxes }
+:::
+:::
+
+
+## Software stack - Overview
+
+<div class="r-stack">
+
+![](images/softstack/software_stack_master.png){.fragment .fade-in-then-out data-fragment-index="1" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_1.png){.fragment .fade-in-then-out data-fragment-index="2" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_2.png){.fragment .fade-in-then-out data-fragment-index="3" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_3.png){.fragment .fade-in-then-out data-fragment-index="4" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_4.png){.fragment .fade-in-then-out data-fragment-index="5" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_5.png){.fragment .fade-in-then-out data-fragment-index="6" width="90%" fig-align="center"}
+
+![](images/softstack/software_stack_master_6.png){.fragment .fade-in-then-out data-fragment-index="7" width="90%" fig-align="center"}
+
+
+
+</div>
+
+::: notes
+ the next requirement was a flexible software system capable of generating precisely controlled optical stimuli.
+To achieve this, I developed a modular software backend. The user specifies an experiment through a simple Python interface, where all stimulus parameters are defined. These parameters are then passed to a C-based rendering engine that interfaces directly with the graphics hardware to generate the stimulus frames in real time.
+The generated frames are displayed on the OLED, while their presentation times are simultaneously transmitted as digital synchronization events to the Maxwell recording system. This ensures that every presented frame can be accurately aligned with the recorded neuronal activity during offline analysis.
+
+:::
+
+
+## Appendix - GPU Shader implementation
+<div class="fragment fade-in" data-fragment-index="1" style="margin-top:20px;">
+
+$$
+I(x,y,t)
+=
+\sin\!\left(
+\frac{2\pi}{\lambda}
+\left(
+x\cos\theta+y\sin\theta
+\right)
+-
+2\pi f_t t
+\right)
+$$
+
+</div>
+
+## Appendix - Spatio-temporal electrical field
+
+::: {.columns}
+::: {.column width="50%"}
+<video src="images/results/electrical_foot/54.mp4" controls width="100%"></video>
+:::
+
+
+::: {.column width="50%"}
+
+#### Electrical footprint
+
+<div class="r-stack">
+
+<div class="fragment fade-in-then-out stack-frame" data-fragment-index="4">
+![](images/results/electrical_foot/ef_ef.png){width="80%"}
+</div>
+
+<div class="fragment fade-in-then-out stack-frame " data-fragment-index="5">
+![](images/results/electrical_foot/ef_ef_1.png){width="80%"}
+<div class="stack-eq">
+$$
+\bbox[0px,border:0px solid white]{\color{red}{\bar{v}_i(\alpha)}}=
+\frac{1}{N_s}\sum_{s=1}^{N_s}v_i(t_s+\alpha) \quad \alpha \in [-2,2]~\textrm{ms}
+$$
+</div>
+</div>
+
+<div class="fragment fade-in stack-frame" data-fragment-index="6">
+![](images/results/electrical_foot/ef_ef_2.png){width="80%"}
+</div>
+
+</div>
+
+:::
 :::

@@ -1,17 +1,14 @@
-
-
 // lensplot.js
 
 import * as ChartJS from "https://cdn.jsdelivr.net/npm/chart.js/auto/+esm";
 
-const { Chart } = ChartJS;console.log("lensplot.js loaded");
-// --------------------------------------------------------------------
-// Replace these with your data
-// --------------------------------------------------------------------
+const { Chart } = ChartJS;
 
-// ---------------------------
+console.log("lensplot.js loaded");
+
+// --------------------------------------------------------------------
 // Your data
-// ---------------------------
+// --------------------------------------------------------------------
 
 const points = [
     { x: 0.7477, y: 0.0127 },
@@ -24,6 +21,10 @@ const points = [
 ];
 
 const fit = [
+    { x: 0.7477, y: 0.0153 },
+    { x: 0.7581, y: 0.0149 },
+    { x: 0.7686, y: 0.0145 },
+    { x: 0.7791, y: 0.0141 },
     { x: 0.7895, y: 0.0137 },
     { x: 0.8, y: 0.0134 },
     { x: 0.8105, y: 0.013 },
@@ -222,34 +223,40 @@ const fit = [
     { x: 2.8302, y: 0.0011 }
 ];
 
+const highlight = [
+    { x: 0.7477, y: 0.0127 }
+];
 
-// ---------------------------
-// Chart instance
-// ---------------------------
+// --------------------------------------------------------------------
+// Charts
+// --------------------------------------------------------------------
 
-let chart = null;
+let charts = [];
 
-function initChart() {
+// --------------------------------------------------------------------
+// Create one chart
+// --------------------------------------------------------------------
 
-    const canvas = document.getElementById("lens-chart");
+function createChart(canvas) {
 
-    if (!canvas) return;
-
-    chart = new Chart(canvas, {
+    return new Chart(canvas, {
 
         type: "scatter",
 
         data: {
+
             datasets: [
+
                 {
                     label: "Measurements",
                     data: [],
                     pointRadius: 10,
-                    pointStyle: 'circle',
+                    pointStyle: "circle",
                     backgroundColor: "#ff4646",
                     borderColor: "black",
                     borderWidth: 1
                 },
+
                 {
                     type: "line",
                     label: "Fit",
@@ -258,16 +265,32 @@ function initChart() {
                     borderColor: "red",
                     borderDash: [6, 4],
                     borderWidth: 2
+                },
+
+                {
+                    label: "Highlight",
+                    data: [],
+                    pointRadius: 14,
+                    pointStyle: "circle",
+                    backgroundColor: "transparent",
+                    borderColor: "red",
+                    borderWidth: 3,
+                    order: 100
                 }
+
             ]
         },
 
         options: {
+
             responsive: true,
+
             animation: {
                 duration: 800
             },
+
             scales: {
+
                 x: {
                     type: "linear",
                     title: {
@@ -275,22 +298,41 @@ function initChart() {
                         text: "f #"
                     }
                 },
+
                 y: {
                     title: {
                         display: true,
-                        text: "E"
+                        text: "LPD"
                     }
                 }
+
             }
+
         }
+
     });
 
-    setupRevealControls();
 }
 
-// ---------------------------
-// Reveal.js control logic
-// ---------------------------
+// --------------------------------------------------------------------
+// Update every chart
+// --------------------------------------------------------------------
+
+function updateCharts(callback) {
+
+    charts.forEach(chart => {
+
+        callback(chart);
+
+        chart.update();
+
+    });
+
+}
+
+// --------------------------------------------------------------------
+// Reveal controls
+// --------------------------------------------------------------------
 
 function setupRevealControls() {
 
@@ -301,45 +343,90 @@ function setupRevealControls() {
 
     Reveal.on("fragmentshown", (event) => {
 
-        if (!chart) return;
-
         const id = event.fragment.id;
 
-        if (id === "show-points") {
+        switch (id) {
 
-            chart.data.datasets[0].data = points;
-            chart.update();
+            case "show-points":
 
+                updateCharts(chart => {
+                    chart.data.datasets[0].data = points;
+                });
+
+                break;
+
+            case "show-fit":
+
+                updateCharts(chart => {
+                    chart.data.datasets[1].data = fit;
+                });
+
+                break;
+
+            case "highlight-point":
+
+                updateCharts(chart => {
+                    chart.data.datasets[2].data = highlight;
+                });
+
+                break;
         }
 
-        if (id === "show-fit") {
-
-            chart.data.datasets[1].data = fit;
-            chart.update();
-
-        }
     });
 
     Reveal.on("fragmenthidden", (event) => {
 
-        if (!chart) return;
-
         const id = event.fragment.id;
 
-        if (id === "show-points") {
-            chart.data.datasets[0].data = [];
-            chart.update();
+        switch (id) {
+
+            case "show-points":
+
+                updateCharts(chart => {
+                    chart.data.datasets[0].data = [];
+                });
+
+                break;
+
+            case "show-fit":
+
+                updateCharts(chart => {
+                    chart.data.datasets[1].data = [];
+                });
+
+                break;
+
+            case "highlight-point":
+
+                updateCharts(chart => {
+                    chart.data.datasets[2].data = [];
+                });
+
+                break;
         }
 
-        if (id === "show-fit") {
-            chart.data.datasets[1].data = [];
-            chart.update();
-        }
     });
+
 }
 
-// ---------------------------
-// Init after DOM ready
-// ---------------------------
+// --------------------------------------------------------------------
+// Initialize all charts
+// --------------------------------------------------------------------
 
-window.addEventListener("load", initChart);
+function initCharts() {
+
+    const canvases = document.querySelectorAll("canvas.lens-chart");
+
+    charts = [];
+
+    canvases.forEach(canvas => {
+
+        charts.push(createChart(canvas));
+
+    });
+
+    setupRevealControls();
+
+}
+
+window.addEventListener("load", initCharts);
